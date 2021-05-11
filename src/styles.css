@@ -1,0 +1,9 @@
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
+body {
+  background: #2a6fdb;
+  background: -webkit-linear-gradient(to left, #2a6fdb, #48d6d2);
+  background: -o-linear-gradient(to left, #2a6fdb, #48d6d2);
+  background: -moz-linear-gradient(to left, #2a6fdb, #48d6d2);
+  background: linear-gradient(to left, #2a6fdb, #48d6d2);
+}

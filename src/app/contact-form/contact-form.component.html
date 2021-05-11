@@ -1,0 +1,137 @@
+<div class="contact1">
+  <div class="container-contact1">
+    <div class="contact1-pic pic1" >
+      <img
+        src="../../assets/images/undraw_Social_networking.svg"
+        alt="Social Networking"
+      />
+    </div>
+    <form class="contact1-form validate-form" #contactForm contactForm="ngForm">
+      <span class="contact1-form-title"> Get in touch </span>
+
+      <div class="submission" *ngIf="!submittedForm">
+        <div
+          id="firstName"
+          class="wrap-input1 validate-input"
+          data-validate="First name is required"
+        >
+          <input
+            class="input1"
+            type="text"
+            name="FirstName"
+            placeholder="First Name"
+            required
+            (ngModelChange)="this.validateFirstName()"
+            [(ngModel)]="Inquiry.FIRST_NAME"
+            #firstNameInput
+            firstNameInput="ngModel"
+          />
+          <span class="shadow-input1"></span>
+        </div>
+           
+        <div
+          id="lastName"
+          class="wrap-input1 validate-input"
+          data-validate="Last name is required"
+        >
+          <input
+            class="input1"
+            type="text"
+            name="LastName"
+            placeholder="Last Name"
+            required
+            (ngModelChange)="this.validateLastName()"
+            [(ngModel)]="Inquiry.LAST_NAME"
+            #lastNameInput
+            lastNameInput="ngModel"
+          />
+          <span class="shadow-input1"></span>
+        </div>
+
+        <div
+          id="email"
+          class="wrap-input1 validate-input"
+          data-validate="Email is required"
+        >
+          <input
+            class="input1"
+            type="text"
+            name="Email"
+            placeholder="Email"
+            required
+            (ngModelChange)="validateEmail()"
+            [(ngModel)]="Inquiry.EMAIL"
+            #emailInput
+            emailInput="ngModel"
+          />
+          <span class="shadow-input1"></span>
+        </div>
+
+        <div
+          id="subject"
+          class="wrap-input1 validate-input"
+          data-validate="Subject is required"
+        >
+          <input
+            class="input1"
+            type="text"
+            name="Subject"
+            placeholder="Subject"
+            required
+            (ngModelChange)="validateSubject()"
+            [(ngModel)]="Inquiry.SUBJECT"
+            #subjectInput
+            subjectInput="ngModel"
+          />
+          <span class="shadow-input1"></span>
+        </div>
+
+        <div
+          id="message"
+          class="wrap-input1 validate-input"
+          data-validate="Message is required"
+        >
+          <textarea
+            class="input1"
+            name="Message"
+            placeholder="Message"
+            required
+            (ngModelChange)="validateMessage()"
+            [(ngModel)]="Inquiry.MESSAGE"
+            #messageInput
+            messageInput="ngModel"
+          ></textarea>
+          <span class="shadow-input1"></span>
+        </div>
+
+        <div class="container-contact1-form-btn">
+          <button
+            class="contact1-form-btn"
+            [disabled]="!validForm"
+            (click)="this.sendEmail()"
+          >
+            <span>
+              Send Email
+              <fa-icon [icon]="faSendEmail"></fa-icon>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <div class="confirmed mt-5" *ngIf="submittedForm">
+        <div class="contact1-pic pic2 mb-5" >
+          <img src="../../assets/images/undraw_Confirmed.svg" alt="Confirmed" />
+        </div>
+
+        <div class="container-contact1-form-btn mt-5">
+          <button class="contact1-form-btn" (click)="this.resendEmail()">
+            <span>
+              Send Another Email
+              <fa-icon [icon]="faResendEail"></fa-icon>
+            </span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

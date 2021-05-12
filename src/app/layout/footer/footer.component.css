@@ -1,0 +1,16 @@
+@font-face {
+  font-family: Montserrat-Bold;
+  src: url("../../../assets/fonts/montserrat/Montserrat-Bold.ttf");
+}
+
+@media (max-width: 767px) {
+  .emails {
+    margin-top: 1rem;
+  }
+}
+
+.container {
+  font-family: Montserrat-Bold;
+  font-size: 15px;
+  text-align: center;
+}

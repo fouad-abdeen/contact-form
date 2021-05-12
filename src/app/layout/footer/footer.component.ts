@@ -1,15 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { CommonService } from 'src/app/core/services/common.service';
+import { Title } from 'src/app/core/services/proxy.service';
 
 @Component({
   selector: 'app-footer',
   templateUrl: './footer.component.html',
-  styleUrls: ['./footer.component.css']
+  styleUrls: ['./footer.component.css'],
 })
-export class FooterComponent implements OnInit {
+export class FooterComponent {
+  lang: string = this.common.lang;
 
-  constructor() { }
+  // Dynamic Data
+  @Input() titles: Title[] = [];
+  myTitles: string[] = [];
 
-  ngOnInit(): void {
+  constructor(private common: CommonService) {}
+
+  ngAfterContentChecked() {
+    this.lang = this.common.lang;
+    this.myTitles = this.titles.map((title: Title) => title[this.lang]);
   }
-
 }

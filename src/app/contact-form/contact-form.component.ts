@@ -1,14 +1,31 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { faPaperPlane, faRedoAlt } from '@fortawesome/free-solid-svg-icons';
-import { Contact, Proxy } from '.././core/services/proxy.service';
+import {
+  Contact,
+  FormAction,
+  FormMessage,
+  Proxy,
+  Title,
+} from '.././core/services/proxy.service';
+import { CommonService } from '../core/services/common.service';
 
 @Component({
   selector: 'app-contact-form',
   templateUrl: './contact-form.component.html',
   styleUrls: ['./contact-form.component.css'],
 })
-export class ContactFormComponent implements OnInit {
-  // Contact Form (Inquiry) Model
+export class ContactFormComponent {
+  lang: string = this.common.lang;
+
+  // Dynamic Data
+  @Input() placeholders: Title[] = [];
+  @Input() formActions: FormAction[] = [];
+  @Input() FormMessages: FormMessage[] = [];
+  myPlaceholders: string[] = [];
+  myFormActions: string[] = [];
+  myFormMessages: string[] = [];
+
+  // Contact Form (Inquiry)
   Inquiry: Contact = new Contact();
   validForm: boolean = false;
   submittedForm: boolean = false;
@@ -31,9 +48,7 @@ export class ContactFormComponent implements OnInit {
   faSendEmail = faPaperPlane;
   faResendEail = faRedoAlt;
 
-  constructor(private apiCaller: Proxy) {}
-
-  ngOnInit(): void {}
+  constructor(private apiCaller: Proxy, private common: CommonService) {}
 
   getElement(selector: string): Element | null {
     return document.querySelector(selector);
@@ -83,6 +98,14 @@ export class ContactFormComponent implements OnInit {
   // #endregion
 
   // #region Form Submission
+  Clear_Values() {
+    this.Inquiry.firstName = '';
+    this.Inquiry.lastName = '';
+    this.Inquiry.emailAddress = '';
+    this.Inquiry.subject = '';
+    this.Inquiry.message = '';
+  }
+
   sendEmail() {
     const validInquiry = this.isValidForm();
     if (!validInquiry) {
@@ -90,8 +113,18 @@ export class ContactFormComponent implements OnInit {
       throw new Error('Invalid Form Submission');
     }
 
-    this.submittedForm = true;
-    return false;
+    this.Inquiry.language = this.common.lang;
+
+    try {
+      this.apiCaller.CreateContact(this.Inquiry).subscribe(() => {
+        this.Clear_Values();
+        this.submittedForm = true;
+        return false;
+      });
+    } catch (e) {
+      console.log(`${e.message} ?!`);
+      alert(e.message);
+    }
   }
 
   resendEmail() {
@@ -99,4 +132,17 @@ export class ContactFormComponent implements OnInit {
     return false;
   }
   // #endregion
+
+  ngAfterContentChecked() {
+    this.lang = this.common.lang;
+    this.myPlaceholders = this.placeholders.map(
+      (placeholder: Title) => placeholder[this.lang]
+    );
+    this.myFormActions = this.formActions.map(
+      (formAction: FormAction) => formAction[this.lang]
+    );
+    this.myFormMessages = this.FormMessages.map(
+      (formMessage: FormMessage) => formMessage[this.lang]
+    );
+  }
 }

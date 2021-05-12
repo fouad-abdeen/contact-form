@@ -1,13 +1,15 @@
-<div class="contact1">
+<div id="body" class="contact1">
   <div class="container-contact1">
-    <div class="contact1-pic pic1" >
+    <div class="contact1-pic pic1">
       <img
         src="../../assets/images/undraw_Social_networking.svg"
         alt="Social Networking"
       />
     </div>
     <form class="contact1-form validate-form" #contactForm contactForm="ngForm">
-      <span class="contact1-form-title"> Get in touch </span>
+      <span class="contact1-form-title">
+        <strong>{{ myFormActions[0] }}</strong>
+      </span>
 
       <div class="submission" *ngIf="!submittedForm">
         <div
@@ -19,16 +21,16 @@
             class="input1"
             type="text"
             name="FirstName"
-            placeholder="First Name"
+            [placeholder]="myPlaceholders[0]"
             required
             (ngModelChange)="this.validateFirstName()"
-            [(ngModel)]="Inquiry.FIRST_NAME"
+            [(ngModel)]="Inquiry.firstName"
             #firstNameInput
             firstNameInput="ngModel"
           />
           <span class="shadow-input1"></span>
         </div>
-           
+
         <div
           id="lastName"
           class="wrap-input1 validate-input"
@@ -38,10 +40,10 @@
             class="input1"
             type="text"
             name="LastName"
-            placeholder="Last Name"
+            [placeholder]="myPlaceholders[1]"
             required
             (ngModelChange)="this.validateLastName()"
-            [(ngModel)]="Inquiry.LAST_NAME"
+            [(ngModel)]="Inquiry.lastName"
             #lastNameInput
             lastNameInput="ngModel"
           />
@@ -51,16 +53,16 @@
         <div
           id="email"
           class="wrap-input1 validate-input"
-          data-validate="Email is required"
+          data-validate="Email address is required"
         >
           <input
             class="input1"
             type="text"
             name="Email"
-            placeholder="Email"
+            [placeholder]="myPlaceholders[2]"
             required
             (ngModelChange)="validateEmail()"
-            [(ngModel)]="Inquiry.EMAIL"
+            [(ngModel)]="Inquiry.emailAddress"
             #emailInput
             emailInput="ngModel"
           />
@@ -76,10 +78,10 @@
             class="input1"
             type="text"
             name="Subject"
-            placeholder="Subject"
+            [placeholder]="myPlaceholders[3]"
             required
             (ngModelChange)="validateSubject()"
-            [(ngModel)]="Inquiry.SUBJECT"
+            [(ngModel)]="Inquiry.subject"
             #subjectInput
             subjectInput="ngModel"
           />
@@ -94,10 +96,10 @@
           <textarea
             class="input1"
             name="Message"
-            placeholder="Message"
+            [placeholder]="myPlaceholders[4]"
             required
             (ngModelChange)="validateMessage()"
-            [(ngModel)]="Inquiry.MESSAGE"
+            [(ngModel)]="Inquiry.message"
             #messageInput
             messageInput="ngModel"
           ></textarea>
@@ -111,7 +113,8 @@
             (click)="this.sendEmail()"
           >
             <span>
-              Send Email
+              <strong>{{ myFormActions[1] }}</strong>
+              {{ "" }}
               <fa-icon [icon]="faSendEmail"></fa-icon>
             </span>
           </button>
@@ -119,14 +122,15 @@
       </div>
 
       <div class="confirmed mt-5" *ngIf="submittedForm">
-        <div class="contact1-pic pic2 mb-5" >
+        <div class="contact1-pic pic2 mb-5">
           <img src="../../assets/images/undraw_Confirmed.svg" alt="Confirmed" />
         </div>
 
         <div class="container-contact1-form-btn mt-5">
           <button class="contact1-form-btn" (click)="this.resendEmail()">
             <span>
-              Send Another Email
+              <strong>{{ myFormActions[2] }}</strong>
+              {{ "" }}
               <fa-icon [icon]="faResendEail"></fa-icon>
             </span>
           </button>

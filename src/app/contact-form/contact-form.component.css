@@ -461,3 +461,8 @@ textarea.input1 + .shadow-input1 {
     opacity: 1;
   }
 }
+
+.input1 {
+  content: attr(placeholder);
+  font-weight: bolder;
+}

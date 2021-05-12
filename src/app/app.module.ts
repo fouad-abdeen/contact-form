@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ContactFormComponent } from './contact-form/contact-form.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HeaderComponent } from './layout/header/header.component';
 import { FooterComponent } from './layout/footer/footer.component';
 import { CommonService } from './core/services/common.service';
@@ -15,6 +15,7 @@ import { RouterModule } from '@angular/router';
 import { AppRoutes } from './app.routes';
 import { LanguageModule } from './language/language.module';
 import { InterceptorService } from './core/services/interceptor.service';
+import { RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
 
 @NgModule({
   declarations: [
@@ -27,8 +28,10 @@ import { InterceptorService } from './core/services/interceptor.service';
     BrowserModule,
     NgbModule,
     HttpClientModule,
-    FormsModule,
     FontAwesomeModule,
+    FormsModule,
+    RecaptchaModule,
+    RecaptchaFormsModule,
     LanguageModule,
     RouterModule.forRoot(AppRoutes),
   ],

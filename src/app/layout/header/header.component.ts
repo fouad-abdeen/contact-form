@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  AfterContentChecked,
+  AfterViewChecked,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import {
   faGithub,
   faTwitter,
@@ -19,7 +27,7 @@ import { RoutesNames } from 'src/app/names.routes';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
 })
-export class HeaderComponent {
+export class HeaderComponent implements AfterContentChecked {
   // Language Detection and Change
   lang: string = this.common.lang;
   en: string = RoutesNames.english;
@@ -31,7 +39,6 @@ export class HeaderComponent {
   @Input() socialAccounts: (SocialAccount | null)[] = [];
   @Input() socialLinks: SocialLink[] = [];
   @Input() titles: Title[] = [];
-  @Input() myTitles: string[] = [];
 
   // FontAwesome Icons
   Github = faGithub;
@@ -42,12 +49,19 @@ export class HeaderComponent {
 
   constructor(private common: CommonService) {}
 
-  changeLanguage(lang: string) {
+  changeLanguage(lang: string): void {
     this.choosenLanguage.emit(lang);
   }
 
-  ngAfterContentChecked() {
+  getTitleById(id: number): string {
+    if (this.titles.length === 0) {
+      return '';
+    } else {
+      return this.titles[id][this.lang];
+    }
+  }
+
+  ngAfterContentChecked(): void {
     this.lang = this.common.lang;
-    this.myTitles = this.titles.map((title: Title) => title[this.lang]);
   }
 }

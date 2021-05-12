@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { CommonService } from './core/services/common.service';
 import {
-  FormAction,
-  FormMessage,
   Proxy,
   SocialAccount,
   SocialLink,
@@ -30,8 +28,8 @@ import { RoutesNames } from './names.routes';
     ></app-header>
     <app-contact-form
       [placeholders]="this.formPlaceholders"
-      [formActions]="this.formActions"
-      [FormMessages]="this.formMessages"
+      [actions]="this.formActions"
+      [messages]="this.formMessages"
     ></app-contact-form>
     <app-footer [titles]="this.footerTitles"></app-footer>
   `,
@@ -48,8 +46,8 @@ export class AppComponent implements OnInit {
   headerTitles: Title[] = [];
   footerTitles: Title[] = [];
   formPlaceholders: Title[] = [];
-  formActions: FormAction[] = [];
-  formMessages: FormMessage[] = [];
+  formActions: Title[] = [];
+  formMessages: Title[] = [];
 
   constructor(
     private router: Router,
@@ -58,27 +56,32 @@ export class AppComponent implements OnInit {
     private apiCaller: Proxy
   ) {}
 
-  switchLanguageToEn() {
+  // #region Language Change Handling
+  switchLanguageToEn(): void {
     this.common.lang = RoutesNames.english;
+
     const path = this.router.url.slice(3);
     this.router.navigate([RoutesNames.english + path]);
+
     const body = document.getElementById('body');
     const footer = document.getElementById('footer');
     body!.style.direction = 'ltr';
     footer!.style.direction = 'ltr';
   }
 
-  switchLanguageToAr() {
+  switchLanguageToAr(): void {
     this.common.lang = RoutesNames.arabic;
+
     const path = this.router.url.slice(3);
     this.router.navigate([RoutesNames.arabic + path]);
+
     const body = document.getElementById('body');
     const footer = document.getElementById('footer');
     body!.style.direction = 'rtl';
     footer!.style.direction = 'rtl';
   }
 
-  switchLanguage(lang: string) {
+  switchLanguage(lang: string): void {
     if (lang === RoutesNames.arabic) {
       this.switchLanguageToAr();
     } else {
@@ -86,9 +89,10 @@ export class AppComponent implements OnInit {
     }
   }
 
-  resetLanguage() {
+  resetLanguage(): void {
     this.lang = this.common.lang;
   }
+  // #endregion
 
   ngOnInit() {
     // #region API Calls
@@ -108,36 +112,32 @@ export class AppComponent implements OnInit {
       for (const t of data) {
         if (t.id === 'header') {
           this.headerTitles.push(t);
+        } else if (t.id === 'form-action') {
+          this.formActions.push(t);
         } else if (t.id === 'form-placeholder') {
           this.formPlaceholders.push(t);
+        } else if (t.id === 'form-message') {
+          this.formMessages.push(t);
         } else if (t.id === 'footer') {
           this.footerTitles.push(t);
         }
       }
     });
-
-    this.apiCaller.GetFormActions().subscribe((data: FormAction[]) => {
-      for (const fa of data) {
-        this.formActions.push(fa);
-      }
-    });
-
-    this.apiCaller.GetFormMessages().subscribe((data: FormMessage[]) => {
-      for (const fm of data) {
-        this.formMessages.push(fm);
-      }
-    });
     // #endregion
 
+    // Subscribing to the Router Changes
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        // Change language to English.
-        // While accessing the first child of the root in router state tree.
+        // Decide what language to set depending on the accessed data
+        // from the first child of the root in the router state tree.
+
+        // if (setLangAsEn === undefined) => true
+        // if (setLangAsEn === false) => false
         this.setLangAsEn =
           this.activatedRoute.firstChild!.snapshot.data.setLangAsEn !== false;
 
-        // Change language to Arabic.
-        // While accessing the first child of the root in router state tree.
+        // if (setLangAsAr === undefined) => true
+        // if (setLangAsAr === false) => false
         this.setLangAsAr =
           this.activatedRoute.firstChild!.snapshot.data.setLangAsAr !== false;
       }

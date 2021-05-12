@@ -1,29 +1,35 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { faPaperPlane, faRedoAlt } from '@fortawesome/free-solid-svg-icons';
 import {
-  Contact,
-  FormAction,
-  FormMessage,
-  Proxy,
-  Title,
-} from '.././core/services/proxy.service';
+  AfterContentChecked,
+  Component,
+  ElementRef,
+  Input,
+  ViewChild,
+} from '@angular/core';
+import { faPaperPlane, faRedoAlt } from '@fortawesome/free-solid-svg-icons';
+import { environment } from 'src/environments/environment.prod';
+import { Contact, Proxy, Title } from '.././core/services/proxy.service';
 import { CommonService } from '../core/services/common.service';
+import { RoutesNames } from '../names.routes';
+
+interface invalidInput {
+  [input: string]: boolean;
+}
 
 @Component({
   selector: 'app-contact-form',
   templateUrl: './contact-form.component.html',
   styleUrls: ['./contact-form.component.css'],
 })
-export class ContactFormComponent {
+export class ContactFormComponent implements AfterContentChecked {
+  readonly SITE_KEY = environment.recaptchaSiteKey;
   lang: string = this.common.lang;
+  en: string = RoutesNames.english;
+  ar: string = RoutesNames.arabic;
 
   // Dynamic Data
   @Input() placeholders: Title[] = [];
-  @Input() formActions: FormAction[] = [];
-  @Input() FormMessages: FormMessage[] = [];
-  myPlaceholders: string[] = [];
-  myFormActions: string[] = [];
-  myFormMessages: string[] = [];
+  @Input() actions: Title[] = [];
+  @Input() messages: Title[] = [];
 
   // Contact Form (Inquiry)
   Inquiry: Contact = new Contact();
@@ -44,11 +50,30 @@ export class ContactFormComponent {
   @ViewChild('messageInput')
   messageInput!: ElementRef;
 
+  // Validity of each Input
+  invalidInput: invalidInput = {};
+
   // FontAwesome Icons
   faSendEmail = faPaperPlane;
   faResendEail = faRedoAlt;
 
   constructor(private apiCaller: Proxy, private common: CommonService) {}
+
+  getPlaceholderById(id: number): string {
+    if (this.placeholders.length === 0) {
+      return '';
+    } else {
+      return this.placeholders[id][this.lang];
+    }
+  }
+
+  getActionById(id: number): string {
+    if (this.actions.length === 0) {
+      return '';
+    } else {
+      return this.actions[id][this.lang];
+    }
+  }
 
   getElement(selector: string): Element | null {
     return document.querySelector(selector);
@@ -60,89 +85,80 @@ export class ContactFormComponent {
     const wrapper = this.getElement(wrapperSelector);
 
     if (element.classList.contains('ng-invalid')) {
-      wrapper?.classList.add('alert-validate');
+      if (this.lang === RoutesNames.english)
+        wrapper?.classList.add('alert-validate');
+      this.invalidInput[wrapperSelector] = true;
     } else {
       wrapper?.classList.remove('alert-validate');
+      this.invalidInput[wrapperSelector] = false;
     }
   }
 
-  validateFirstName() {
+  validateFirstName(): void {
     this.validateElement(this.firstNameInput.nativeElement, '#firstName');
     this.validForm = this.isValidForm();
   }
 
-  validateLastName() {
+  validateLastName(): void {
     this.validateElement(this.lastNameInput.nativeElement, '#lastName');
     this.validForm = this.isValidForm();
   }
 
-  validateEmail() {
+  validateEmail(): void {
     this.validateElement(this.emailInput.nativeElement, '#email');
     this.validForm = this.isValidForm();
   }
 
-  validateSubject() {
+  validateSubject(): void {
     this.validateElement(this.subjectInput.nativeElement, '#subject');
     this.validForm = this.isValidForm();
   }
 
-  validateMessage() {
+  validateMessage(): void {
     this.validateElement(this.messageInput.nativeElement, '#message');
     this.validForm = this.isValidForm();
   }
 
-  isValidForm() {
+  isValidForm(): boolean {
     const form = this.contactForm.nativeElement;
     return form.classList.contains('ng-valid');
   }
   // #endregion
 
   // #region Form Submission
-  Clear_Values() {
-    this.Inquiry.firstName = '';
-    this.Inquiry.lastName = '';
-    this.Inquiry.emailAddress = '';
-    this.Inquiry.subject = '';
-    this.Inquiry.message = '';
+  resolved(captchaResponse: string) {
+    if (captchaResponse === null) {
+      this.common.recaptchaToken = '';
+    } else {
+      this.common.recaptchaToken = captchaResponse;
+    }
   }
 
-  sendEmail() {
+  sendEmail(): boolean {
     const validInquiry = this.isValidForm();
+
     if (!validInquiry) {
       this.validForm = false;
       throw new Error('Invalid Form Submission');
     }
 
-    this.Inquiry.language = this.common.lang;
+    this.Inquiry.language = this.lang;
 
-    try {
-      this.apiCaller.CreateContact(this.Inquiry).subscribe(() => {
-        this.Clear_Values();
-        this.submittedForm = true;
-        return false;
-      });
-    } catch (e) {
-      console.log(`${e.message} ?!`);
-      alert(e.message);
-    }
+    this.apiCaller.CreateContact(this.Inquiry).subscribe(() => {
+      this.Inquiry = new Contact();
+      this.submittedForm = true;
+    });
+
+    return false;
   }
 
-  resendEmail() {
+  resendEmail(): boolean {
     this.submittedForm = false;
     return false;
   }
   // #endregion
 
-  ngAfterContentChecked() {
+  ngAfterContentChecked(): void {
     this.lang = this.common.lang;
-    this.myPlaceholders = this.placeholders.map(
-      (placeholder: Title) => placeholder[this.lang]
-    );
-    this.myFormActions = this.formActions.map(
-      (formAction: FormAction) => formAction[this.lang]
-    );
-    this.myFormMessages = this.FormMessages.map(
-      (formMessage: FormMessage) => formMessage[this.lang]
-    );
   }
 }

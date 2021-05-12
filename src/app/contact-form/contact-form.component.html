@@ -8,10 +8,52 @@
     </div>
     <form class="contact1-form validate-form" #contactForm contactForm="ngForm">
       <span class="contact1-form-title">
-        <strong>{{ myFormActions[0] }}</strong>
+        <strong>{{ getActionById(0) }}</strong>
       </span>
 
       <div class="submission" *ngIf="!submittedForm">
+        <!--Form Validation Messages-->
+        <p
+          *ngIf="this.lang === this.ar && invalidInput['#firstName']"
+          class="mb-2 text-center"
+        >
+          <ngb-alert type="danger" [dismissible]="false">
+            <strong>{{ messages[0].ar }}</strong>
+          </ngb-alert>
+        </p>
+        <p
+          *ngIf="this.lang === this.ar && invalidInput['#lastName']"
+          class="mb-2 text-center"
+        >
+          <ngb-alert type="danger" [dismissible]="false">
+            <strong>{{ messages[1].ar }}</strong>
+          </ngb-alert>
+        </p>
+        <p
+          *ngIf="this.lang === this.ar && invalidInput['#email']"
+          class="mb-2 text-center"
+        >
+          <ngb-alert type="danger" [dismissible]="false">
+            <strong>{{ messages[2].ar }}</strong>
+          </ngb-alert>
+        </p>
+        <p
+          *ngIf="this.lang === this.ar && invalidInput['#subject']"
+          class="mb-2 text-center"
+        >
+          <ngb-alert type="danger" [dismissible]="false">
+            <strong>{{ messages[3].ar }}</strong>
+          </ngb-alert>
+        </p>
+        <p
+          *ngIf="this.lang === this.ar && invalidInput['#message']"
+          class="mb-2 text-center"
+        >
+          <ngb-alert type="danger" [dismissible]="false">
+            <strong>{{ messages[4].ar }}</strong>
+          </ngb-alert>
+        </p>
+
         <div
           id="firstName"
           class="wrap-input1 validate-input"
@@ -21,7 +63,7 @@
             class="input1"
             type="text"
             name="FirstName"
-            [placeholder]="myPlaceholders[0]"
+            [placeholder]="getPlaceholderById(0)"
             required
             (ngModelChange)="this.validateFirstName()"
             [(ngModel)]="Inquiry.firstName"
@@ -40,7 +82,7 @@
             class="input1"
             type="text"
             name="LastName"
-            [placeholder]="myPlaceholders[1]"
+            [placeholder]="getPlaceholderById(1)"
             required
             (ngModelChange)="this.validateLastName()"
             [(ngModel)]="Inquiry.lastName"
@@ -59,7 +101,7 @@
             class="input1"
             type="text"
             name="Email"
-            [placeholder]="myPlaceholders[2]"
+            [placeholder]="getPlaceholderById(2)"
             required
             (ngModelChange)="validateEmail()"
             [(ngModel)]="Inquiry.emailAddress"
@@ -78,7 +120,7 @@
             class="input1"
             type="text"
             name="Subject"
-            [placeholder]="myPlaceholders[3]"
+            [placeholder]="getPlaceholderById(3)"
             required
             (ngModelChange)="validateSubject()"
             [(ngModel)]="Inquiry.subject"
@@ -96,7 +138,7 @@
           <textarea
             class="input1"
             name="Message"
-            [placeholder]="myPlaceholders[4]"
+            [placeholder]="getPlaceholderById(4)"
             required
             (ngModelChange)="validateMessage()"
             [(ngModel)]="Inquiry.message"
@@ -106,14 +148,21 @@
           <span class="shadow-input1"></span>
         </div>
 
-        <div class="container-contact1-form-btn">
+        <re-captcha
+          (resolved)="resolved($event)"
+          name="recaptchaReactive"
+          [siteKey]="SITE_KEY"
+        >
+        </re-captcha>
+
+        <div class="container-contact1-form-btn mt-3">
           <button
             class="contact1-form-btn"
             [disabled]="!validForm"
             (click)="this.sendEmail()"
           >
             <span>
-              <strong>{{ myFormActions[1] }}</strong>
+              <strong>{{ getActionById(1) }}</strong>
               {{ "" }}
               <fa-icon [icon]="faSendEmail"></fa-icon>
             </span>
@@ -129,7 +178,7 @@
         <div class="container-contact1-form-btn mt-5">
           <button class="contact1-form-btn" (click)="this.resendEmail()">
             <span>
-              <strong>{{ myFormActions[2] }}</strong>
+              <strong>{{ getActionById(2) }}</strong>
               {{ "" }}
               <fa-icon [icon]="faResendEail"></fa-icon>
             </span>

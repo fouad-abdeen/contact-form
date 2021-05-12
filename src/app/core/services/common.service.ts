@@ -3,8 +3,9 @@ import { RoutesNames } from 'src/app/names.routes';
 
 @Injectable()
 export class CommonService {
-  public APIUrl = 'http://localhost:8080/api/data';
-  lang = RoutesNames.english;
+  public APIUrl: string = 'https://fouad-portfolio.herokuapp.com/api/data';
+  public lang: string = RoutesNames.english;
+  public recaptchaToken: string = '';
 
   constructor() {}
 }

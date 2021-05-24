@@ -1,6 +1,7 @@
 # Contact Form
 
 Contact Form is a simple full-stack web app (frontend here) to let you send me messages. That's proof of my intention to build a portfolio in the nearest future.
+
 The web app is built with the MEAN stack (Angular, Express, Node.js, and MongoDB).
 
 ## Features
